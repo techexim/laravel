@@ -9,7 +9,7 @@ trait HasSoftDeletes
      *
      * @return void
      */
-    public static function bootSoftDeletes()
+    public static function bootHasSoftDeletes()
     {
         if (static::$useSoftDeletes) {
             static::addGlobalScope(new SoftDeletingScope);
