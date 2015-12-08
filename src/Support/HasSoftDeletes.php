@@ -1,5 +1,7 @@
 <?php namespace TechExim\Support;
 
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 trait HasSoftDeletes
 {
     /**
