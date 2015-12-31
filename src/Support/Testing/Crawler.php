@@ -21,19 +21,19 @@ trait Crawler
      */
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
-        $kernel = $this->app->make('Illuminate\Contracts\Http\Kernel');
+        $resources = $this->prepareRequest($method, $uri, $parameters, $cookies, $files, $server, $content);
+        list($method, $uri, $parameters, $cookies, $files, $server, $content) = $resources;
 
+        $kernel           = $this->app->make('Illuminate\Contracts\Http\Kernel');
         $this->currentUri = $this->prepareUrlForRequest($uri);
-
-        $this->beforeRequest($method, $uri, $parameters, $cookies, $files, $server, $content);
 
         $request = Request::create(
             $this->currentUri, $method, $parameters,
             $cookies, $files, array_replace($this->serverVariables, $server), $content
         );
 
-        $request  = $this->beforeHandleRequest($request);
-        $response = $this->afterHandleRequest($kernel->handle($request));
+        $request  = $this->beforeRequest($request);
+        $response = $this->afterRequest($kernel->handle($request));
 
         $kernel->terminate($request, $response);
 
@@ -49,22 +49,30 @@ trait Crawler
      * @param array $server
      * @param null  $content
      */
-    protected function beforeRequest($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [],
-                                     $content = null)
+    protected function prepareRequest($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [],
+                                      $content = null)
     {
-        // do something
+        return [
+            $method,
+            $uri,
+            $parameters,
+            $cookies,
+            $files,
+            $server,
+            $content
+        ];
     }
 
     /**
      * @param Request $request
      * @return Request
      */
-    protected function beforeHandleRequest(Request $request)
+    protected function beforeRequest(Request $request)
     {
         return $request;
     }
 
-    protected function afterHandleRequest($response)
+    protected function afterRequest($response)
     {
         return $response;
     }
