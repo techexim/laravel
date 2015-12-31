@@ -1,12 +1,9 @@
 <?php namespace TechExim\Support\Testing;
 
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Testing\CrawlerTrait;
 
 trait Crawler
 {
-    use CrawlerTrait;
-
     /**
      * Call the given URI and return the Response.
      *
@@ -41,13 +38,13 @@ trait Crawler
     }
 
     /**
-     * @param       $method
-     * @param       $uri
-     * @param array $parameters
-     * @param array $cookies
-     * @param array $files
-     * @param array $server
-     * @param null  $content
+     * @param string $method
+     * @param string $uri
+     * @param array  $parameters
+     * @param array  $cookies
+     * @param array  $files
+     * @param array  $server
+     * @param null   $content
      */
     protected function prepareRequest($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [],
                                       $content = null)
