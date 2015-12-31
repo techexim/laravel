@@ -34,8 +34,10 @@ trait JsonAssertions
                 } else {
                     $this->assertFalse($actual);
                 }
-            } else {
+            } else if (is_string($value)) {
                 $this->assertRegExp($value, (string) $actual);
+            } else {
+                $this->assertEquals($value, $actual);
             }
         }
     }
