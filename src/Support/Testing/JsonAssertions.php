@@ -11,21 +11,21 @@ trait JsonAssertions
      *     'code'  => '/^\d+$/i'
      * ]);
      * </code>
-     * @param array      $expected
-     * @param array|null $data if it is not specified, use json response instead
+     * @param array $expected
+     * @param mixed $data if it is not specified, use json response instead
      */
-    public function seeJsonRegExp(array $expected, array $data = null)
+    public function seeJsonRegExp(array $expected, $data = null)
     {
         if (is_null($data)) {
-            $data = json_decode($this->response->getContent(), true);
+            $data = $this->getJsonResponse();
         }
 
         foreach ($expected as $key => $value) {
-            if (!isset($data[$key])) {
+            if (!isset($data->$key)) {
                 $this->assertFalse(true, "$key does not exist in response");
             }
 
-            $actual = $data[$key];
+            $actual = $data->$key;
             if (is_array($value)) {
                 $this->seeJsonRegExp($value, $actual);
             } else if (is_bool($value)) {
@@ -40,5 +40,13 @@ trait JsonAssertions
                 $this->assertEquals($value, $actual);
             }
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJsonResponse()
+    {
+        return property_exists($this, 'response') ? json_decode($this->response->getContent()) : null;
     }
 }
