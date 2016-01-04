@@ -1,5 +1,7 @@
 <?php namespace TechExim\Support\Testing;
 
+use ErrorException;
+
 trait JsonAssertions
 {
     /**
@@ -35,7 +37,11 @@ trait JsonAssertions
                     $this->assertFalse($actual);
                 }
             } else if (is_string($value)) {
-                $this->assertRegExp($value, (string) $actual);
+                try {
+                    $this->assertRegExp($value, (string) $actual);
+                } catch (ErrorException $e) {
+                    $this->assertEquals($value, $actual);
+                }
             } else {
                 $this->assertEquals($value, $actual);
             }
