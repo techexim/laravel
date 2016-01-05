@@ -24,11 +24,23 @@ trait JsonAssertions
         }
 
         foreach ($expected as $key => $value) {
-            if (!isset($data->$key)) {
-                $this->assertFalse(true, "$key does not exist in response");
+            if (is_array($data)) {
+                if (isset($data[$key])) {
+                    $actual = $data[$key];
+                } else {
+                    $this->assertFalse(true, "$key does not exist in array.");
+                }
+            } elseif (is_object($data)) {
+                if (isset($data->$key)) {
+                    $actual = $data->$key;
+                } else {
+                    $this->assertFalse(true, "$key does not exist in object.");
+                }
+            } else {
+                $this->assertFalse(true, "Input data must be an array or object.");
+                continue;
             }
 
-            $actual = $data->$key;
             if (is_array($value)) {
                 $this->seeJsonRegExp($value, $actual, $message);
             } else if (is_bool($value)) {
